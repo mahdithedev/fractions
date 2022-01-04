@@ -1,7 +1,7 @@
 # fractions
-a basic class for basic use of fractions in c++
+a class for basic use of fractions in c++
 
-it supports simplfying , additon , subtraction , multiplication and division 
+it supports simplfying , additon , subtraction , multiplication and division
 
 ## Building
 
