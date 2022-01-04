@@ -1,21 +1,19 @@
 #include<bits/stdc++.h>
-
-
-class Fraction {
-    public:
+#include "./fractions.h"
     
-      Fraction(int numerator , int denominator , bool simplfy_frac = 1 ) : _numerator(numerator) , _denominator(denominator) {
+      Fraction::Fraction(int numerator , int denominator , bool simplfy_frac ) : _numerator(numerator) , _denominator(denominator) {
 
           if(simplfy_frac)
             *this = simplfy(*this);
 
       };
 
-      Fraction(int numerator ) : _numerator(numerator) , _denominator(1) {};
+      Fraction::Fraction(int numerator ) : _numerator(numerator) , _denominator(1) {};
 
         //https://stackoverflow.com/questions/26643695/converting-a-floating-point-decimal-value-to-a-fraction
         //with some modifications
-       Fraction(double input) {
+
+       Fraction::Fraction(double input) {
 
         int sign = input > 0 ? 1 : -1 ;
         input = std::abs(input);
@@ -26,7 +24,7 @@ class Fraction {
         const long precision = 1000000000; // This is the accuracy.
 
         long gcd_ = gcd(round(frac * precision), precision);  //based on my interpretation bacuse the gcd
-        //is an int and can't be floating point we need to find the gcd of 
+        //is an int and can't be a decimal we need to find the gcd of 
         //round(frac * precision) and precision
 
         long denominator = precision / gcd_;
@@ -43,9 +41,11 @@ class Fraction {
 
       };
 
-      Fraction() : _numerator(0) , _denominator(1) {};
+      Fraction::Fraction(const Fraction& _frac_b) : _numerator(_frac_b.get_numerator()) , _denominator(_frac_b.get_denominator()) {};
 
-      static int gcd(int a , int b) noexcept {
+      Fraction::Fraction() : _numerator(0) , _denominator(1) {};
+
+      int Fraction::gcd(int a , int b) noexcept {
 
            a = std::abs(a);
            b = std::abs(b);
@@ -62,11 +62,11 @@ class Fraction {
 
       };
 
-      static int lcm(int a , int b) {
+      int Fraction::lcm(int a , int b) {
           return (a*b)/gcd(a,b);
       }
 
-      static Fraction simplfy(const Fraction& _frac) {
+      Fraction Fraction::simplfy(const Fraction& _frac) {
 
           int _numerator = _frac.get_numerator() , _denominator = _frac.get_denominator();
 
@@ -82,7 +82,7 @@ class Fraction {
 
       };
 
-      static Fraction inverse(const Fraction& _frac) {
+      Fraction Fraction::inverse(const Fraction& _frac) {
 
           int _numerator = _frac.get_numerator();
           int _denominator = _frac.get_denominator();
@@ -95,34 +95,32 @@ class Fraction {
 
       }
 
-      void set_numerator(int numerator) noexcept {
+      void Fraction::set_numerator(int numerator) noexcept {
           _numerator = numerator;
           (*this) = simplfy(*this);
       };
       
-      void set_numerator_without_simplifying(int numerator) noexcept {
+      void Fraction::set_numerator_without_simplifying(int numerator) noexcept {
           _numerator = numerator;
       };
 
-      void set_denominator_without_simplifying(int denominator) noexcept {
+      void Fraction::set_denominator_without_simplifying(int denominator) noexcept {
           _denominator = denominator;
       };
 
-      int get_numerator() const {
+      int Fraction::get_numerator() const {
           return _numerator;
       }
 
-      int get_denominator() const {
+      int Fraction::get_denominator() const {
           return _denominator;
       }
 
-      double get_decimal() const {
-          return _numerator/_denominator;
+      double Fraction::get_decimal() const {
+          return (double)_numerator/(double)_denominator;
       }
 
-      friend std::ostream& operator<<(std::ostream& stream , const Fraction& _fraction);
-
-      Fraction operator+(const Fraction& _frac_b) {
+      Fraction Fraction::operator+(const Fraction& _frac_b) {
 
           int _lcm = lcm(_denominator , _frac_b.get_denominator());
 
@@ -135,7 +133,7 @@ class Fraction {
           
       }
 
-      Fraction& operator+=(const Fraction& _frac_b) {
+      Fraction& Fraction::operator+=(const Fraction& _frac_b) {
           
           int _lcm = lcm(_denominator , _frac_b.get_denominator());
 
@@ -150,7 +148,7 @@ class Fraction {
 
       }
 
-      Fraction operator-(const Fraction& _frac_b) {
+      Fraction Fraction::operator-(const Fraction& _frac_b) {
 
           int _lcm = lcm(_denominator , _frac_b.get_denominator());
 
@@ -163,7 +161,7 @@ class Fraction {
           
       }
 
-      Fraction& operator-=(const Fraction& _frac_b) {
+      Fraction& Fraction::operator-=(const Fraction& _frac_b) {
           
           int _lcm = lcm(_denominator , _frac_b.get_denominator());
 
@@ -178,46 +176,49 @@ class Fraction {
 
       }
 
-      Fraction operator*(const Fraction& _frac_b) {
+      Fraction Fraction::operator*(const Fraction& _frac_b) {
           return Fraction(_numerator * _frac_b.get_numerator() , _denominator * _frac_b.get_denominator());
       };
 
-      Fraction& operator*=(const Fraction& _frac_b) {
+      Fraction& Fraction::operator*=(const Fraction& _frac_b) {
           (*this) = Fraction(_numerator * _frac_b.get_numerator() , _denominator * _frac_b.get_denominator());
           return (*this);
       };
 
-      Fraction operator/(const Fraction& _frac_b) {
+      Fraction Fraction::operator/(const Fraction& _frac_b) {
           auto _frac_c = inverse(_frac_b);
           return Fraction(_numerator * _frac_c.get_numerator() , _denominator * _frac_c.get_denominator());
       };
 
-      Fraction& operator/=(const Fraction& _frac_b) {
+      Fraction& Fraction::operator/=(const Fraction& _frac_b) {
           auto _frac_c = inverse(_frac_b);
           (*this) = Fraction(_numerator * _frac_c.get_numerator() , _denominator * _frac_c.get_denominator());
           return (*this);
       };
 
-    private:
-      int _numerator;
-      int _denominator;
-};
+      bool Fraction::operator==(const Fraction& _frac_b) {
 
+          auto f_a = simplfy(*this);
+          auto f_b = simplfy(_frac_b);
+
+          return (f_a.get_numerator() == f_b.get_numerator() && f_a.get_denominator() == f_b.get_denominator());
+
+      }
+
+     Fraction operator/(int number , const Fraction& _frac) {
+
+         auto _frac_b = Fraction::inverse(_frac);
+
+        int _numerator = number;
+        int _denominator = 1;
+        
+        return Fraction(_numerator * _frac_b.get_numerator() , _denominator * _frac_b.get_denominator());
+
+     } 
 
 std::ostream& operator<<(std::ostream& stream , const Fraction& _fraction) {
 
     stream<<_fraction.get_numerator()<<"/"<<_fraction.get_denominator();
-
     return stream;
-
-};
-
-
-
-int main() {
-
-   Fraction frac(0.2999);
-
-   std::cout<<frac;
 
 };
