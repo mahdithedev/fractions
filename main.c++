@@ -13,21 +13,35 @@ class Fraction {
 
       Fraction(int numerator ) : _numerator(numerator) , _denominator(1) {};
 
-        //working on it i am trying to use regex      
-    //   Fraction(double decimal) {
+        //https://stackoverflow.com/questions/26643695/converting-a-floating-point-decimal-value-to-a-fraction
+        //with some modifications
+       Fraction(double input) {
 
-    //       decimal -= std::floor(decimal);
-    //       std::string decimal_s = std::to_string(decimal);
-    //       int digits_after_decimal = decimal_s.length()-2;
+        int sign = input > 0 ? 1 : -1 ;
+        input = std::abs(input);
 
-    //       std::cout<<decimal_s<<"\n";
+        int integral = std::floor(input); //getting the number before the decimal point
+        double frac = input - integral; //getting the number after the decimal point
 
-    //       int power_of_ten = std::pow(10 , digits_after_decimal);
+        const long precision = 1000000000; // This is the accuracy.
 
-    //       _numerator = power_of_ten*decimal;
-    //       _denominator = power_of_ten; 
+        long gcd_ = gcd(round(frac * precision), precision);  //based on my interpretation bacuse the gcd
+        //is an int and can't be floating point we need to find the gcd of 
+        //round(frac * precision) and precision
 
-    //   };
+        long denominator = precision / gcd_;
+        long numerator = round(frac * precision) / gcd_;
+
+        _denominator = denominator;
+        _numerator = numerator;
+
+        if(sign == -1)
+        _numerator *= -1;
+
+        if(integral)
+        (*this) = (*this) + integral;
+
+      };
 
       Fraction() : _numerator(0) , _denominator(1) {};
 
@@ -38,17 +52,13 @@ class Fraction {
 
            if (a == 0)
             return b;
-
-           if (b == 0)
+           else if (b == 0)
             return a;
 
-           if (a == b)
-            return a;
-  
-           if (a > b)
-            return gcd(a-b, b);
-
-           return gcd(a, b-a);
+           if (a < b)
+            return gcd(a, b % a);
+           else
+            return gcd(b, a % b);
 
       };
 
@@ -188,7 +198,6 @@ class Fraction {
           return (*this);
       };
 
-
     private:
       int _numerator;
       int _denominator;
@@ -207,8 +216,8 @@ std::ostream& operator<<(std::ostream& stream , const Fraction& _fraction) {
 
 int main() {
 
-    Fraction fraction1 = Fraction(1,2);
+   Fraction frac(0.2999);
 
-    std::cout<<fraction1/Fraction(3,2)/2<<"\n";
+   std::cout<<frac;
 
 };
